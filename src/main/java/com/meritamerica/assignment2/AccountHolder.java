@@ -8,31 +8,18 @@ public class AccountHolder {
 	private String middleName;
 	private String lastName;
 	private String ssn;
-	private double checkingAccountOpeningBalance;
-	private double savingsAccountOpeningBalance;
+	
+	private CheckingAccount[] checkingAccountArray = new CheckingAccount[0];
+	private SavingsAccount[] savingsAccountArray = new SavingsAccount[0];
+	private CDAccount[] cdAccountArray = new CDAccount[0];
 	private CheckingAccount checkingAccount;
 	private SavingsAccount savingsAccount;
-
+	private CDAccount cdAccount;
 
 	public AccountHolder() {
-
-		
-	}
-
-	AccountHolder(String firstName, String middleName, String lastName,
-			String ssn, double checkingAccountOpeningBalance, 
-			double savingsAccountOpeningBalance){
-
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.middleName = middleName;
-		this.ssn = ssn;
-		this.checkingAccountOpeningBalance = checkingAccountOpeningBalance;
-		this.savingsAccountOpeningBalance = savingsAccountOpeningBalance;
-		checkingAccount = new CheckingAccount(checkingAccountOpeningBalance);
-		savingsAccount = new SavingsAccount(savingsAccountOpeningBalance);
-	}
 	
+	}
+
 	AccountHolder(String firstName, String middleName, String lastName, String ssn) {
 		
 		this.firstName = firstName;
@@ -40,7 +27,6 @@ public class AccountHolder {
 		this.lastName = lastName;
 		this.ssn = ssn;
 	}
-
 
 
 	public String getFirstName() {
@@ -75,89 +61,127 @@ public class AccountHolder {
 		this.ssn = ssn;
 	}
 
-	public double getCheckingAccountOpeningBalance() {
-		return checkingAccountOpeningBalance;
-	}
-
-	public double getSavingsAccountOpeningBalance() {
-		return savingsAccountOpeningBalance;
-	}
-
-	public CheckingAccount getCheckingAccount() {
-		return checkingAccount;
-	}
-
 	
 
-	public SavingsAccount getSavingsAccount() {
-		return savingsAccount;
-	}
 
-	@Override
-	public String toString() {
-		
-		return "Name: "+getFirstName() +" "+ getMiddleName() +" "+ getLastName() + "\n"+
-				"SSN: "+ getSsn() + "\n" +
-				"Checking Account Balance:"+getCheckingAccountOpeningBalance() + "\n" +
-				"Checking Account Interest Rate: " + checkingAccount.getInterestRate() + "\n" +
-				"Checking Account Balance in 3 years: " +checkingAccount.futureValue(3)+ "\n" +
-				"Savings Account Balance: " +getSavingsAccountOpeningBalance() + "\n" +
-				"Savings Account Interest Rate: " + savingsAccount.getInterestRate() +"\n" +
-				"Savings Account Balance in 3 years: " + savingsAccount.futureValue(3);
-	}
-	
 	CheckingAccount addCheckingAccount(double openingBalance) {
-		return null;
+		checkingAccount = new CheckingAccount(openingBalance);
+		addCheckingAccount(checkingAccount);
+		return checkingAccount;
 		
 	}
 	CheckingAccount addCheckingAccount(CheckingAccount checkingAccount) {
-		return null;
-		
+		double checkingAndSavingsBalance  = getCheckingBalance() + getSavingsBalance() + checkingAccount.getBalance();
+		if(checkingAndSavingsBalance < 250000) {
+			
+			CheckingAccount[] temp = new CheckingAccount[this.checkingAccountArray.length + 1];
+			for(int i = 0; i<checkingAccountArray.length; i++)
+				temp[i] = this.checkingAccountArray[i];
+			temp[temp.length - 1] = checkingAccount;
+			this.checkingAccountArray = temp;
+			return checkingAccount;
+		}
+		else {
+			System.out.println("Checking Account can not be created, total account balance exceeds $250,000");
+			return null;
+		}
 	}
 	CheckingAccount[] getCheckingAccounts() {
-		return null;
+		
+		return checkingAccountArray;
 		
 	}
 
 	int getNumberOfCheckingAccounts() {
-		
+		return checkingAccountArray.length;
 	}
 	double getCheckingBalance() {
+		double checkingBalance = 0.0;
 		
+		if(checkingAccountArray != null) {
+			for(int i = 0 ; i < checkingAccountArray.length ; i++) {
+				checkingBalance += checkingAccountArray[i].getBalance();
+				
+			}
+		}
+		return checkingBalance;
 	}
 	SavingsAccount addSavingsAccount(double openingBalance) {
-		
+		savingsAccount = new SavingsAccount(openingBalance);
+		addSavingsAccount(savingsAccount);
+		return savingsAccount;
+		 
 	}
 	SavingsAccount addSavingsAccount(SavingsAccount savingsAccount) {
-		
+		if((getCheckingBalance() + getSavingsBalance() + savingsAccount.getBalance()) < 250000) {
+			SavingsAccount[] temp = new SavingsAccount[this.savingsAccountArray.length + 1];
+			for(int i = 0; i<savingsAccountArray.length; i++)
+				temp[i] =this.savingsAccountArray[i];
+			
+			temp[temp.length - 1] = savingsAccount;
+			this.savingsAccountArray = temp;
+			return savingsAccount;
+		}
+		else {
+			System.out.println("Savings Account can not be created, total account balance exceeds $250,000");
+			return null;
+		}
 	}
 	SavingsAccount[] getSavingsAccounts() {
 		
+		return savingsAccountArray;
 	}
 	int getNumberOfSavingsAccounts() {
-		
+		return savingsAccountArray.length;
 	}
 	double getSavingsBalance() {
-		
+		double savingsBalance = 0.0;
+		if(savingsAccountArray != null) {
+			for(int i = 0 ; i < savingsAccountArray.length ; i++) {
+				savingsBalance += savingsAccountArray[i].getBalance();
+				
+			}
+		}
+		return savingsBalance;
 	}
 	CDAccount addCDAccount(CDOffering offering, double openingBalance) {
-		
+		cdAccount = new CDAccount(offering, openingBalance);
+		addCDAccount(cdAccount);
+		return cdAccount;
 	}
 	CDAccount addCDAccount(CDAccount cdAccount) {
+		
+		CDAccount[] temp = new CDAccount[this.cdAccountArray.length + 1];
+		for(int i = 0; i<cdAccountArray.length; i++)
+			temp[i] = this.cdAccountArray[i];
+		temp[temp.length - 1] = cdAccount;
+		this.cdAccountArray = temp;
+		
+		return cdAccount;
 		
 	}
 	CDAccount[] getCDAccounts() {
 		
+		return cdAccountArray;
 	}
 	int getNumberOfCDAccounts() {
-		
+		return cdAccountArray.length;
 	}
 	double getCDBalance() {
+		double cdBalance = 0.0;
 		
+		if(cdAccountArray != null) {
+			for(int i = 0 ; i < cdAccountArray.length ; i++) {
+				cdBalance += cdAccountArray[i].getBalance();
+				
+			}
+		}
+		return cdBalance;
 	}
 	double getCombinedBalance() {
+		double combinedBalance =
+					getCheckingBalance() + getSavingsBalance() + getCDBalance();
 		
+		return combinedBalance;
 	}
-
-
 }
