@@ -5,8 +5,13 @@ public class CDOffering {
 	private int term;
 	private double interestRate;
 	
-	CDOffering(int term, double interestRate) {
+	public CDOffering() {
 		
+	}
+	
+	CDOffering(int term, double interestRate) {
+		this.term = term;
+		this.interestRate = interestRate;
 	}
 	
 	public int getTerm() {
